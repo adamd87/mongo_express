@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<body>
+<h2>User Registration</h2>
+<form id="user-form" action="http://localhost:3000/users" method="post">
+    <label for="fname">First name:</label><br>
+    <input type="text" id="fname" name="fname"><br>
+    <label for="lname">Last name:</label><br>
+    <input type="text" id="lname" name="lname"><br><br>
+    <input type="submit" value="Submit">
+</form>
+
+<h2>Registered Users</h2>
+<ul id="user-list">
+</ul>
+<script>
+    document.getElementById('user-form').addEventListener('submit', function (event) {
+        event.preventDefault();
+        fetch('http://localhost:3000/users', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams(new FormData(event.target)),
+        })
+            .then(document.getElementById('user-form').reset())
+            .then(() => {
+                fetch('http://localhost:3000/users')
+                    .then(response => response.json())
+                    .then(users => {
+                        const userList = document.getElementById('user-list');
+                        userList.innerHTML = '';
+                        users.forEach(user => {
+                            const li = document.createElement('li');
+                            li.textContent = `${user.fname} ${user.lname}`;
+                            userList.appendChild(li);
+                        });
+                    });
+            });
+    });
+
+
+</script>
+</body>
+</html>
